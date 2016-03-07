@@ -1,0 +1,207 @@
+%YAML 1.2
+---
+&IL input_length:
+  - type        : int4
+    description : The total length of all input parameters (after this one)
+
+&FNL function_name_length:
+  - type        : int4
+    description : Length of the actual function name
+
+&FN function_name:
+  - type        : string,\0,char43
+    description : The API function name
+
+&AUL authenticated_userid_length:
+  - type        : int4
+    description : Length of authenticated_userid
+
+&AU_IUCV authenticated_userid_iucv:
+  - type        : string,0-8,char42
+    description : The userid under whose authority to perform the function with AF_IUCV
+
+&AU_INET authenticated_userid_inet:
+  - type        : string,1-8,char42
+    description : The userid under whose authority to perform the function with AF_INET
+
+&AU authenticated_userid:
+  - type        : oneof
+  - methods     : [ *AU_IUCV, *AU_INET ] 
+
+&PL password_length:
+  - type        : int4
+    description : Length of "password"
+
+&P_IUCV password_iucv:
+  - type        : string,0-200,charNA
+    description : The password or passphrase to be used for authentication AF_IUCV requests
+
+&P_INET password_inet: 
+  - type        : string,1-200,charNA
+    description : The password or passphrase to be used for authentication AF_INET requests 
+
+&P password:
+  - type        : oneof
+    methods     : [ *P_IUCV, *P_INET ]
+
+&TIL target_identifier_length:
+  - type        : int4
+    description : Length of "target_identifier"
+
+&TI target_identifier:
+  - type        : string,1-8,char42
+    description : The name of the image being queried
+
+&RI request_id:
+  - type        : int4
+    description : The identifier of the request
+
+&OL output_length:
+  - type        : int4
+    description : The total length of all output parameters (after this one)
+
+&RTC return_code:
+  - type        : int4
+    description : The return code
+
+&RAC reason_code:
+  - type        : int4
+    description : The reason code
+
+&IRAL image_record_array_length:
+  - type        : int4
+    description : Length of image_record_array
+
+&IRL image_record_length:
+  - type        : int4
+    description : Length of image_record
+
+&IR image_record:
+  - type        : string,1-80,charNA
+    description : A record from the virtual image's directory entry
+
+&IRS image_record_structure:
+  - type        : structure
+    description : A structure consisting of one set of image_record_length and image_record
+    components  : [ *IRL, *IR ]
+
+&IRA image_record_array:
+  - type        : array
+    description : An array of zero or more instances of image_record_structure
+    components  : [ *IRS ]    
+
+&SNL switch_name_length:
+  - type        : int4
+    description : Length of switch_name
+
+&SN switch_name: 
+  - type        : { 'string,1-8,char36 plus @#$_', 'string,1,*' }
+    description : { 'The name of the new virtual switch', 'All virtual switches' }
+
+&TT transport_type:
+  - type        : int1
+    description : { '1':IP, '2':Ethernet }
+
+&PT port_type:
+  - type        : int1
+    description : { '1':Access, '2':Trunk }
+
+&QML query_memory_limit:
+  - type        : int4
+    description : The QDIO buffer size in megabytes
+
+&RV routing_value:
+  - type        : int1
+    description : { '1':The device will not act as a router, '2':The device will act as a router }
+
+&VI vlan_id:
+  - type        : int4
+    description : The default VLAN ID. A value of 32768 indicates that the virtual switch was created as VLAN AWARE, without a default VLAN ID.
+
+&NVI native_vlan_id:
+  - type        : int4
+    description : The native VLAN ID. A value of 32768 indicates that the virtual switch was created as VLAN AWARE, with a native VLAN ID of NONE.
+
+&MI mac_id:
+  - type        : int8
+    description : The MAC identifier
+
+&VAL vswitch_array_length:
+  - type        : 
+    description :
+
+&VSL vswitch_structure_length:
+  - type        :
+    description :
+
+&GRA gvrp_request_attribute:
+  - type        : int1
+    description : { '1':GVRP requested, '2':GVRP not requested }
+
+&GEA gvrp_enabled_attribute:
+  - type        : int1
+    description : { '1':GVRP enabled, '2':GVRP not enabled }
+
+&SS switch_status:
+  - type        : int1
+    description : { '1':Virtual switch defined., 
+                    '2':Controller not available.,
+                    '3':Operator intervention required.,
+                    '4':Disconnected.,
+                    '5':Virtual devices attached to controller. Normally a transient state.,
+                    '6':OSA initialization in progress. Normally a transient state.,
+                    '7':OSA device not ready.,
+                    '8':OSA device ready.,
+                    '9':OSA devices being detached. Normally a transient state.,
+                   '10':Virtual switch delete pending. Normally a transient state.,
+                   '11':Virtual switch failover recovering. Normally a transient state.,
+                   '12':Autorestart in progress. Normally a transient state.  }
+
+&RDS real_device_structure:
+
+&RDAL real_device_array_length:
+  - type        : int4
+    description : Length of real_device_array
+
+&RDA real_device_array:
+  - type        : array
+    description : An array consisting of zero or more instances of real_device_structure
+    components  : [ *RDS ]
+    
+&AUAL authorized_user_array_length:
+  - type        :
+    description :
+
+&AUA authorized_user_array:
+  - type        :
+    description :
+
+&CAAL connected_adapter_array_length:
+  - type        :
+    description :
+
+&CAA connected_adapter_array:
+  - type        :
+    description :
+
+
+&VS vswitch_structure: [ *VAL, *SNL, *SN, *TT, *PT, *QML, *RV, *VI, *NVI, *MI, *GRA, 
+    *GEA, *SS, *RDAL, *RDA, *AUAL, *AUA, *CAAL, *CAA ]
+
+&VA vswitch_array:
+  - type        : array
+    description :
+
+
+Image_Query_DM:
+  - Input Parameters: [ *IL, *FNL, *FN, *AUL, *AU, *PL, *P, *TIL, *TI ]
+  - Immediate Request Verification:
+    - *RI
+  - Output Parameters: [ *OL, *RI, *RTC, *RAC, *IRAL, *IRA ]
+
+Virtual_Network_Vswitch_Query:
+  - Input Parameters: [ *IL, *FNL, *FN, *AUL, *AU, *PL, *P, *TIL, *TI, *SNL, *SN ]
+  - Immediate Request Verification:
+    - *RI
+  - Output Parameters: [ *OL, *RI, *RTC, *RAC, *VAL, *VA ]
+  
